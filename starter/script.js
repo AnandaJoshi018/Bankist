@@ -96,6 +96,12 @@ const displayMovements = function(movements){
 };
 displayMovements(account1.movements);
 
+const calcDisplayBalence = function(movements) {
+  const balence = movements.reduce((acc,mov) => acc+mov,0);
+  labelBalance.textContent = `${balence} RUPEES`;
+}
+calcDisplayBalence(account1.movements);
+
 const createUsernames = function (accs) {
   accs.forEach(function (acc){
     acc.username = acc.owner
