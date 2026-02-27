@@ -97,7 +97,11 @@ const displayMovements = function(movements){
 displayMovements(account1.movements);
 
 const calcDisplayBalence = function(movements) {
-  const balence = movements.reduce((acc,mov) => acc+mov,0);
+  const balence = movements.reduce((acc,mov) => acc+mov,0);  //reduce() is an array method that reduces an array into a single value
+  //Like above line --> array.reduce((accumulator, currentValue) => {}, initialValue)
+  //movements = [200, -100] 
+  //Iteration 1  :acc = 0(initial),mov = 200 ➡️ acc + mov = 200
+  //teration 2 :acc = 200 , mov = -100 ➡️   acc + mov = 100
   labelBalance.textContent = `${balence} RUPEES`;
 }
 calcDisplayBalence(account1.movements);
