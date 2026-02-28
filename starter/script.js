@@ -120,11 +120,11 @@ const calcDisplaySummary = function(movements){
   const interest = movements
     .filter(mov => mov > 0)
     .map(deposit => (deposit * 1.2)/100) //map() transforms each element.[200,500]--Intersest Rate --->[2.4,6]
-    .filter((int , i ,arr) => { //Ignore small interest (< 1₹) & returns a new array
+    .filter((int , i ,arr) => { //Ignore small interest (< 1₹) & returns a new array.
       console.log(arr);
       return int >= 1;
     })
-    .reduce((acc,int) => acc + int , 0); ////Give a single value for filterd array
+    .reduce((acc,int) => acc + int , 0); ////Give a single value for filterd array.
   labelSumInterest.textContent = `${interest}₹`;
 };
 calcDisplaySummary(account1.movements);
