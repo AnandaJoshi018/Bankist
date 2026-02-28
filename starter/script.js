@@ -106,6 +106,30 @@ const calcDisplayBalence = function(movements) {
 }
 calcDisplayBalence(account1.movements);
 
+const calcDisplaySummary = function(movements){
+  const incomes = movements
+   .filter(mov => mov > 0) //filter() returns a new array.#Example💠[200, -100, 500, -50] ➡️ [200, 500]
+   .reduce((acc,mov) => acc + mov , 0); //Give a single value for filterd array
+  labelSumIn.textContent = `${incomes}₹`;
+
+  const out = movements
+    .filter(mov => mov < 0)
+    .reduce((acc,mov) => acc + mov , 0);
+  labelSumOut.textContent = `${Math.abs(out)}₹`;
+
+  const interest = movements
+    .filter(mov => mov > 0)
+    .map(deposit => (deposit * 1.2)/100) //map() transforms each element.[200,500]--Intersest Rate --->[2.4,6]
+    .filter((int , i ,arr) => { //Ignore small interest (< 1₹) & returns a new array
+      console.log(arr);
+      return int >= 1;
+    })
+    .reduce((acc,int) => acc + int , 0); ////Give a single value for filterd array
+  labelSumInterest.textContent = `${interest}₹`;
+};
+calcDisplaySummary(account1.movements);
+
+
 const createUsernames = function (accs) {
   accs.forEach(function (acc){
     acc.username = acc.owner
