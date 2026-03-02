@@ -94,7 +94,7 @@ const displayMovements = function(movements){
   });
 
 };
-displayMovements(account1.movements);
+// To check movements displayMovements(account1.movements);
 
 const calcDisplayBalence = function(movements) {
   const balence = movements.reduce((acc,mov) => acc+mov,0);  //reduce() is an array method that reduces an array into a single value
@@ -104,22 +104,22 @@ const calcDisplayBalence = function(movements) {
   //teration 2 :acc = 200 , mov = -100 ➡️   acc + mov = 100
   labelBalance.textContent = `${balence} RUPEES`;
 }
-calcDisplayBalence(account1.movements);
+// To check Balence calcDisplayBalence(account1.movements);
 
-const calcDisplaySummary = function(movements){
-  const incomes = movements
+const calcDisplaySummary = function(acc){
+  const incomes = acc.movements
    .filter(mov => mov > 0) //filter() returns a new array.#Example💠[200, -100, 500, -50] ➡️ [200, 500]
    .reduce((acc,mov) => acc + mov , 0); //Give a single value for filterd array
   labelSumIn.textContent = `${incomes}₹`;
 
-  const out = movements
+  const out = acc.movements
     .filter(mov => mov < 0)
     .reduce((acc,mov) => acc + mov , 0);
   labelSumOut.textContent = `${Math.abs(out)}₹`;
 
-  const interest = movements
+  const interest = acc.movements
     .filter(mov => mov > 0)
-    .map(deposit => (deposit * 1.2)/100) //map() transforms each element.[200,500]--Intersest Rate --->[2.4,6]
+    .map(deposit => (deposit * acc.interestRate)/100) //map() transforms each element.[200,500]--Intersest Rate --->[2.4,6]
     .filter((int , i ,arr) => { //Ignore small interest (< 1₹) & returns a new array.
       console.log(arr);
       return int >= 1;
@@ -127,7 +127,7 @@ const calcDisplaySummary = function(movements){
     .reduce((acc,int) => acc + int , 0); ////Give a single value for filterd array.
   labelSumInterest.textContent = `${interest}₹`;
 };
-calcDisplaySummary(account1.movements);
+//To check Summary -> calcDisplaySummary(account1.movements);
 
 
 const createUsernames = function (accs) {
@@ -140,3 +140,38 @@ const createUsernames = function (accs) {
   });
 };
 createUsernames(accounts); // to cjeck console.log(accounts);
+
+//Login Implementation
+//Event handler
+let currentAccount;
+
+btnLogin.addEventListener('click', function(e) {
+  //prevent form from submitting
+  e.preventDefault(); //Stop page from refreshing **Normally,Forms refresh the page when submitted but here not we use prevent❌**
+
+  //Find the account with matching username
+  //user types usernames & find() searches the list and picks the matching account.
+  currentAccount = accounts.find(acc => acc.username === inputLoginUsername.value); //Check every account → is username equal to what user typed?
+  console.log(currentAccount); 
+  
+  if(currentAccount?.pin === Number(inputLoginPin.value)){ // ?. means  ->“Only check pin IF account exists.” and string convert to number (EX:pin->"1111"(String)--into-->1111(number))
+    //Display UI and Message
+    labelWelcome.textContent = `Welcome back,
+      ${currentAccount.owner.split(' ')[0]}`; //.split(' ') makes: if "Jonas Schmedtmann" then splie(' ') makes ["Jonas","Schmedtmann"] then [0] picks first Jonas 
+
+    containerApp.style.opacity = 100; //before login invisible(dashboard) and after login visible
+
+    //Clear/hide Input Fields
+    inputLoginUsername.value = inputLoginPin.value = '';
+    inputLoginPin.blur(); //It blurs the blinking cursor like this '|' in password filed
+
+    //Display movements
+    displayMovements(currentAccount.movements);
+
+    //Display Balence
+    calcDisplayBalence(currentAccount.movements);
+
+    //Display Summary
+    calcDisplaySummary(currentAccount); 
+  }
+});
