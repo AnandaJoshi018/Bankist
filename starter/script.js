@@ -96,13 +96,14 @@ const displayMovements = function(movements){
 };
 // To check movements displayMovements(account1.movements);
 
-const calcDisplayBalence = function(movements) {
-  const balence = movements.reduce((acc,mov) => acc+mov,0);  //reduce() is an array method that reduces an array into a single value
+const calcDisplayBalence = function(acc) {
+  acc.balence = acc.movements.reduce((acc,mov) => acc+mov,0); 
+   //reduce() is an array method that reduces an array into a single value
   //Like above line --> array.reduce((accumulator, currentValue) => {}, initialValue)
   //movements = [200, -100] 
   //Iteration 1  :acc = 0(initial),mov = 200 ➡️ acc + mov = 200
   //teration 2 :acc = 200 , mov = -100 ➡️   acc + mov = 100
-  labelBalance.textContent = `${balence} RUPEES`;
+  labelBalance.textContent = `${acc.balence} RUPEES`;
 }
 // To check Balence calcDisplayBalence(account1.movements);
 
@@ -141,6 +142,17 @@ const createUsernames = function (accs) {
 };
 createUsernames(accounts); // to cjeck console.log(accounts);
 
+const updateUI = function(acc){
+  //Display movements
+    displayMovements(acc.movements);
+
+    //Display Balence
+    calcDisplayBalence(acc);
+
+    //Display Summary
+    calcDisplaySummary(acc); 
+}
+
 //Login Implementation
 //Event handler
 let currentAccount;
@@ -165,13 +177,27 @@ btnLogin.addEventListener('click', function(e) {
     inputLoginUsername.value = inputLoginPin.value = '';
     inputLoginPin.blur(); //It blurs the blinking cursor like this '|' in password filed
 
-    //Display movements
-    displayMovements(currentAccount.movements);
-
-    //Display Balence
-    calcDisplayBalence(currentAccount.movements);
-
-    //Display Summary
-    calcDisplaySummary(currentAccount); 
+    //Update UI    
+    updateUI(currentAccount);
   }
+});
+
+btnTransfer.addEventListener('click', function(e) {
+  e.preventDefault();
+  const amount = Number(inputTransferAmount.value);
+  const receiveAcc = accounts.find(
+    acc => acc.username === inputTransferTo.value);
+
+  inputTransferAmount.value = inputTransferTo.value = ""; //To hide user details in transfer money box
+
+  if(amount > 0 && receiveAcc && receiveAcc.username !== currentAccount.username){
+    //Doing the transfer
+    currentAccount.movements.push(-amount);
+    receiveAcc.movements.push(amount);
+
+    //Update UI
+    updateUI(currentAccount);
+
+  }
+  
 });
