@@ -105,21 +105,29 @@ const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 
 /////////////////////////////////////////////////
 
-const displayMovements = function(movements,sort = false){
+const displayMovements = function(acc,sort = false){
 
   containerMovements.innerHTML = '';
 
-  const movs = sort ? movements.slice().sort((a,b) => a - b) : movements;//.slice() Creates a copy of the array. & .sort() modifies the original array, and we don’t want to change the original data.
+  const movs = sort ?acc. movements.slice().sort((a,b) => a - b) : acc.movements;//.slice() Creates a copy of the array. & .sort() modifies the original array, and we don’t want to change the original data.
   //.sort((a,b) => a - b) -> This sorts numbers in ascending order.
   
   
   movs.forEach(function (mov, i) {
   const type = mov > 0 ? 'deposit' : 'withdrawal';
 
+  const date = new Date(acc.movementsDates[i]);
+  const day = `${date.getDate()}`.padStart(2,0);
+  const month = `${date.getMonth() + 1}`.padStart(2,0);
+  const year = date.getFullYear();
+  
+
   const html = `
     <div class="movements__row">
         <div class="movements__type movements__type--${type}">
           ${i + 1} ${type} </div> 
+
+        <div class="movements__date">${day}/${month}/${year}</div>
         <div class="movements__value">${mov.toFixed(2)}</div>
     </div>
   `;
@@ -179,7 +187,7 @@ createUsernames(accounts); // to cjeck console.log(accounts);
 
 const updateUI = function(acc){
   //Display movements
-    displayMovements(acc.movements);
+    displayMovements(acc);
 
     //Display Balence
     calcDisplayBalence(acc);
@@ -191,6 +199,20 @@ const updateUI = function(acc){
 //Login Implementation
 //Event handler
 let currentAccount;
+
+//Date & Time
+currentAccount = account1;
+updateUI(currentAccount);
+containerApp.style.opacity = 100;
+
+//Current Date
+const now = new Date();
+const day = `${now.getDate()}`.padStart(2,0);
+const month = `${now.getMonth() + 1}`.padStart(2,0);
+const year = now.getFullYear();
+const hour = now.getHours();
+const min = now.getMinutes();
+labelDate.textContent = `${day}/${month}/${year}, ${hour}:${min}`;
 
 btnLogin.addEventListener('click', function(e) {
   //prevent form from submitting
@@ -207,6 +229,15 @@ btnLogin.addEventListener('click', function(e) {
       ${currentAccount.owner.split(' ')[0]}`; //.split(' ') makes: if "Jonas Schmedtmann" then splie(' ') makes ["Jonas","Schmedtmann"] then [0] picks first Jonas 
 
     containerApp.style.opacity = 100; //before login invisible(dashboard) and after login visible
+    
+    //Current Date
+    const now = new Date();
+    const day = `${now.getDate()}`.padStart(2,0);
+    const month = `${now.getMonth() + 1}`.padStart(2,0);
+    const year = now.getFullYear();
+    const hour = `${now.getHours()}`.padStart(2,0);
+    const min = `${now.getMinutes()}`.padStart(2,0);
+    labelDate.textContent = `${day}/${month}/${year}, ${hour}:${min}`;
 
     //Clear/hide Input Fields
     inputLoginUsername.value = inputLoginPin.value = '';
@@ -232,6 +263,10 @@ btnTransfer.addEventListener('click', function(e) {
     currentAccount.movements.push(-amount);
     receiveAcc.movements.push(amount);
 
+    //Transfer Date
+    currentAccount.movementsDates.push(new Date().toISOString);
+    receiveAcc.movementsDates.push(new Date().toISOString);
+
     //Update UI
     updateUI(currentAccount);
 
@@ -248,6 +283,9 @@ btnLoan.addEventListener('click',function(e){
   mov >= amount * 0.1)){
     // Add Movements
     currentAccount.movements.push(amount);
+
+    //Current Date
+    currentAccount.movementsDates.push(new Date().toISOString);
 
     //Update UI
     updateUI(currentAccount);
@@ -280,7 +318,7 @@ btnClose.addEventListener('click', function (e) {
 let sorted = false;
 btnSort.addEventListener('click',function(e) {
   e.preventDefault();
-  displayMovements(currentAccount.movements,!sorted);
+  displayMovements(currentAccount,!sorted);
   sorted = !sorted; //This flips the value.false → true or true → false
 
 
