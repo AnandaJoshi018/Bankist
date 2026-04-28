@@ -272,17 +272,6 @@ Possible enhancements:
 
 ---
 
-# 👨‍💻 Author
-
-**Your Name**
-
-Frontend Developer
-JavaScript Enthusiast
-
-GitHub: https://github.com/your-username
-
----
-
 # ⭐ If you like this project
 
 Give it a **star ⭐** on GitHub!
